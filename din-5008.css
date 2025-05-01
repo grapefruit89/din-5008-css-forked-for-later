@@ -16,8 +16,8 @@
  din-5008 {
    padding-top: 27mm;
  }
- 
- /* Falt- und Lochmarken */
+ /*
+
  din-5008::before,
  din-5008::after {
    content: '';
@@ -50,12 +50,12 @@
    .fold-marks {
      position: absolute;
      left: 2mm;
-     top: 87mm; /* Form A */
+     top: 87mm; 
    }
    din-5008[form='B'] .fold-marks {
-     top: 105mm; /* Form B */
+     top: 105mm; 
    }
- 
+ */
  din-5008 briefkopf,
  din-5008 .briefkopf,
  din-5008 rucksendeangabe,
