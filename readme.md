@@ -8,6 +8,8 @@ Based on [these examples from wikimedia](https://commons.wikimedia.org/wiki/Cate
 ## Usage
 
 See [example.html](./index.html) and [the preview](https://grapefruit89.github.io/din-5008-css-forked-for-later/).  
+
+
 <a href="https://upload.wikimedia.org/wikipedia/commons/0/00/DIN_5008_Form_B.svg" target="_blank">
   <img 
     src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/DIN_5008_Form_B.svg/500px-DIN_5008_Form_B.svg.png"
@@ -16,6 +18,7 @@ See [example.html](./index.html) and [the preview](https://grapefruit89.github.i
     style="background: white; padding: 4px; border: 1px solid #ccc;"
   >
 </a>
+
 
 
 
