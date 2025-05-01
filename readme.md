@@ -10,11 +10,21 @@ Based on [these examples from wikimedia](https://commons.wikimedia.org/wiki/Cate
 See [example.html](./index.html) and [the preview](https://grapefruit89.github.io/din-5008-css-forked-for-later/).  
 
 
-### DIN 5008 Form A
-[![Form A](https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008,_Form_A.svg)](https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008,_Form_A.svg)
+<div style="display: flex; gap: 20px; align-items: flex-start;">
+  <div>
+    <a href="https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008,_Form_A.svg" target="_blank">
+      <img src="https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008,_Form_A.svg" width="200" alt="Form A">
+    </a>
+    <p style="text-align: center; font-weight: bold;">Form A</p>
+  </div>
+  <div>
+    <a href="https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008_Form_B.svg" target="_blank">
+      <img src="https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008_Form_B.svg" width="200" alt="Form B">
+    </a>
+    <p style="text-align: center; font-weight: bold;">Form B</p>
+  </div>
+</div>
 
-### DIN 5008 Form B
-[![Form B](https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008_Form_B.svg)](https://raw.githubusercontent.com/grapefruit89/din-5008-css-forked-for-later/master/DIN_5008_Form_B.svg)
 
 
 
