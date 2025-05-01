@@ -17,14 +17,7 @@ din-5008 {
     padding-top: 27mm;
   }
   
-  .fold-marks {
-    position: absolute;
-    left: 2mm;
-    top: 87mm; /* Form A */
-  }
-  din-5008[form='B'] .fold-marks {
-    top: 105mm; /* Form B */
-  }
+
   
   din-5008 briefkopf,
   din-5008 .briefkopf,
