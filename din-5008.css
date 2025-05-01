@@ -18,35 +18,14 @@ din-5008 {
 }
 
 /* Falt- und Lochmarken */
-din-5008::before,
-din-5008::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  display: block;
-  border: 1pt solid var(--markers, rgba(0, 0, 0, 0.3));
-  border-left: none;
-  border-right: none;
-  width: 10mm;
-}
-din-5008::after {
-  top: 148.5mm;
-  width: 15mm;
-  border-bottom: none;
-}
-din-5008::before {
-  height: calc(105mm - 1pt);
-}
-din-5008::before {
-  top: 87mm;
-}
-din-5008[form='B']::before {
-  top: 105mm;
-}
-din-5008[no-markers]::before,
-din-5008[no-markers]::after {
-  display: none;
-}
+  .fold-marks {
+    position: absolute;
+    left: 2mm;
+    top: 87mm; /* Form A */
+  }
+  din-5008[form='B'] .fold-marks {
+    top: 105mm; /* Form B */
+  }
 
 din-5008 briefkopf,
 din-5008 .briefkopf,
