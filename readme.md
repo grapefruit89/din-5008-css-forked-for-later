@@ -7,7 +7,11 @@ Based on [these examples from wikimedia](https://commons.wikimedia.org/wiki/Cate
 
 ## Usage
 
-See [example.html](./index.html) and [the preview](https://grapefruit89.github.io/din-5008-css-forked-for-later/).
+See [example.html](./index.html) and [the preview](https://grapefruit89.github.io/din-5008-css-forked-for-later/).  
+<a href="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/DIN_5008_Form_B.svg/1447px-DIN_5008_Form_B.svg.png" target="_blank">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/DIN_5008_Form_B.svg/1447px-DIN_5008_Form_B.svg.png" alt="DIN 5008 Form B" width="300">
+</a>
+
 
 Components
 
