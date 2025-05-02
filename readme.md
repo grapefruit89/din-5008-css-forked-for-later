@@ -2,14 +2,7 @@
 
 Stylesheet for layouting a A4 paper according to [DIN 5008](https://de.wikipedia.org/wiki/DIN_5008)
 
-Based on [these examples from wikimedia](https://commons.wikimedia.org/wiki/Category:DIN_5008?uselang=de)
-
-
-## Usage
-
-See [example.html](./index.html) and [the preview](https://grapefruit89.github.io/din-5008-css-forked-for-later/).  
-
-
+Based on [these examples from wikimedia](https://commons.wikimedia.org/wiki/Category:DIN_5008?uselang=de)  
 <table>
   <tr>
     <td align="center">
@@ -26,6 +19,14 @@ See [example.html](./index.html) and [the preview](https://grapefruit89.github.i
     </td>
   </tr>
 </table>
+
+
+## Usage
+
+See [example.html](./index.html) and [the preview](https://grapefruit89.github.io/din-5008-css-forked-for-later/).  
+
+
+
 
 
 
