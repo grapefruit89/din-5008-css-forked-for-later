@@ -1,6 +1,6 @@
 # din-5008-css
 
-Stylesheet for layouting a A4 paper according to [DIN 5008](https://de.wikipedia.org/wiki/DIN_5008)
+Stylesheet for layouting a A4 paper according to [DIN 5008 Wikipedia](https://de.wikipedia.org/wiki/DIN_5008)  
 
 Based on [these examples from wikimedia](https://commons.wikimedia.org/wiki/Category:DIN_5008?uselang=de)  
 <table>
