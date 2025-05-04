@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>Example Document in DIN 5008</title>
+
 		
 		<style>
 @page {
@@ -111,8 +112,8 @@ din-5008 {
 					<line x1="0" y1="0.1" x2="10" y2="0.1" stroke="rgba(0, 0, 0, 0.3)" stroke-width="0.2" />
 					<line x1="0" y1="105.1" x2="10" y2="105.1" stroke="rgba(0, 0, 0, 0.3)" stroke-width="0.2" />
 				</svg>
-				<!-- <briefkopf></briefkopf> -->
 				
+				<!-- <briefkopf></briefkopf> -->
 				<wrapper class="wrapper" style="top: 27mm; width: 80mm; display: flex; flex-direction: column;">
 					<rucksendeangabe class="schriftfeld" style="font-size: 7pt; max-height: 5mm; line-height: 10pt;">Mustermann GmbH | Beispiel-Straße 12 | 12345 Beispielhausen</rucksendeangabe>
 					<vermerkzone class="schriftfeld"  style="min-height: 14pt; max-height: 12mm; line-height: 14pt;">Nicht nachsenden!</vermerkzone>
@@ -122,16 +123,17 @@ din-5008 {
 						<br />Postleitzahl und Ort
 					</anschriftzone>
 				</wrapper>
+				
 				<!-- Datum ist soweit fertig -->
-				<datum class="schriftfeld" style="position: absolute; top: 75mm; right: 20mm; text-align: right; min-width: 20mm; max-width: 75mm;">33. mai 2025</datum>
+				<datum class="schriftfeld" style="position: absolute; top: 75mm; right: 20mm; text-align: right; min-width: 20mm; max-width: 75mm;"></datum>
+				
 			
 			
-			
-			
-				<wrapper class="wrapper"  style="top: 90mm; right: 20mm; min-width:50mm;">
-					<betreff class="schriftfeld" style="font-weight: bold; margin-bottom: 10pt; ">Example Document using din-5008-css</betreff>
+				
+				<wrapper class="wrapper" style="top: 90mm; right: 20mm; min-width:50mm;">
+					<betreff class="schriftfeld" style="font-weight: bold; margin-bottom: 10pt;">Example Document using din-5008-css</betreff>
 					<textfeld class="schriftfeld"  style="width: 165mm; display:inline-block; ">
-		Sehr geehrte Damen und Herren,
+						Sehr geehrte Damen und Herren,
 						<br/>
 						<em>Kursiv STRG+I </em>
 						<br/>
@@ -139,7 +141,7 @@ din-5008 {
 						<br/>
 						<u>Unterstrichen STRG+U</u>
 					</textfeld>
-					<grussformel class="schriftfeld"	style="margin: 14pt 0pt 42pt;display:inline-block;">Mit freundlichen Grüßen</grussformel>
+					<grussformel class="schriftfeld"	style="margin: 14pt 0pt 42pt;display:inline-block;">Mit freundlichen Grüßen</grussformel>
 					<br>
 						<absender class="schriftfeld"	style="display:inline-block;">Moritz Baumeister</absender>
 					</wrapper>
@@ -152,6 +154,43 @@ din-5008 {
 					
 					
 				</din-5008>
-				<script src="din-5008.js"></script>
+				
+				
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Alle Elemente mit class="schriftfeld" editierbar machen
+    const schriftfeldElements = document.querySelectorAll('.schriftfeld');
+    schriftfeldElements.forEach(element => {
+        element.setAttribute('contenteditable', 'true');
+    });
+
+    // Aktuelles Datum in <datum> setzen
+    const datumElement = document.querySelector('datum');
+    if (datumElement) {
+        const heute = new Date();
+        const formatiertesDatum = heute.toLocaleDateString('de-DE', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+        datumElement.textContent = formatiertesDatum;
+    }
+
+    // Dynamischen Titel basierend auf <betreff> einrichten
+    const betreffElement = document.querySelector('betreff');
+    const titleElement = document.querySelector('title');
+    if (betreffElement && titleElement) {
+        const updateTitle = () => {
+            const isoDatum = new Date().toISOString().split('T')[0];
+            const betreffText = betreffElement.textContent.trim();
+            titleElement.textContent = `${isoDatum}_${betreffText || 'Unbenannt'}`;
+        };
+        // Initialen Titel setzen
+        updateTitle();
+        // Titel bei Eingabe in <betreff> aktualisieren
+        betreffElement.addEventListener('input', updateTitle);
+    }
+});
+  </script>
 			</body>
 		</html>
