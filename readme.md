@@ -22,8 +22,8 @@ Based on [these examples from wikimedia](https://commons.wikimedia.org/wiki/Cate
 
 
 ## Usage  
-[Github Pages](https://grapefruit89.github.io/din-5008-css-forked-for-later)  
-See [example.html](./index.html) and [the preview](https://grapefruit89.github.io/din-5008-css-forked-for-later/)  
+See [example.html](./index.html)  
+[the preview on Github Pages](https://grapefruit89.github.io/din-5008-css-forked-for-later/)  
 
 
 
