@@ -65,6 +65,25 @@ din-5008 {
   overflow: hidden; /* Schneidet überflüssigen Inhalt ab */
  }
 
+.autocomplete-items {
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #fff;
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+}
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+}
+.autocomplete-items div:hover {
+    background-color: #e9e9e9;
+}
+
+
 
 
 
@@ -136,7 +155,9 @@ din-5008 {
 <!-- ABSENDER -->
 				<wrapper class="wrapper" style=" left: 140mm; right: 20mm; top: 27mm;  display: flex; flex-direction: column;">
 					<absender class="schriftfeld oneline" style="max-width: 50mm;">Moritz Baumeister</absender>
-					<adresse class="schriftfeld"  style="height: fit-content; max-width: 50mm;  ">Kettelerstraße 2 <br>53844 Troisdorf</adresse>
+				<div id="adresse-autocomplete" style="max-width: 400px; position: relative;"></div>
+				<adresse id="adresse" class="schriftfeld" contenteditable="true"></adresse>
+
 					<telefon class="schriftfeld oneline"  style="max-width: 50mm;" ">01601221445</telefon>
 				</wrapper>
 				
@@ -152,13 +173,13 @@ din-5008 {
 					<textfeld class="schriftfeld"  style="width:100%; max-height: 150mm; height:auto;  margin-bottom: 1rem;">
 						<em>Kursiv STRG+I </em>
 						<br/>
-						<b>https://grapefruit89.github.io/din-5008-css-forked-for-later</b>
+						<b>Fett STRG+B </b>
 						<br/>
 						<u>Unterstrichen STRG+U</u>
 					</textfeld>
 					<grussformel class="schriftfeld oneline" style="display:inline-block; margin-bottom: 3rem;">Mit freundlichen Grüßen</grussformel>
 					
-					<absender class="schriftfeld oneline"	style="margin-bottom: 1rem;">Moritz Baumeister</absender>
+					<maschunterschrift class="schriftfeld oneline"	style="margin-bottom: 1rem;">Moritz Baumeister</maschunterschrift>
 					<anlagen class="schriftfeld "	style="height: fit-content;">Anlagen</anlagen>
 					</wrapper>
 <!-- FUßZEILE-->
@@ -171,9 +192,7 @@ din-5008 {
 <script>	//Hauptskript
 document.addEventListener('DOMContentLoaded', () => {
     // 1) .schriftfeld → editierbar
-    document.querySelectorAll('.schriftfeld').forEach(el => {
-        el.contentEditable = 'true';
-    });
+    document.querySelectorAll('.schriftfeld').forEach(el => el.contentEditable = 'true');
 
     // 2) <datum> → aktuelles deutsches Datum
     const datumEl = document.querySelector('datum');
@@ -188,94 +207,296 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3) dynamischer Titel: YYYY-MM-DD_Betreff
     const betreffEl = document.querySelector('betreff');
     if (betreffEl) {
-        const setTitle = () => {
-            const isoDate = new Date().toISOString().split('T')[0];
+        function setTitle() {
             const text = betreffEl.textContent.trim() || 'Unbenannt';
-            document.title = `${isoDate}_${text}`;
-        };
+            document.title = `${text}`;
+        }
         setTitle();
         betreffEl.addEventListener('input', setTitle);
     }
 });
+
 </script>
   
   
   
 <script> //Paste‑Sanitizer mit Selection/Range‑API (future‑proof)
-"use strict";
-document.addEventListener("DOMContentLoaded", () => {
-  // Gemeinsamer Handler für paste & drop
-  const handlePlainTextInsert = e => {
-    e.preventDefault();
-    // Paste: e.clipboardData, Drop: e.dataTransfer
-    const text =
-      e.clipboardData?.getData("text/plain")
-      ?? e.dataTransfer?.getData("text/plain")
-      ?? "";
-    insertTextAtCursor(text);
-  };
-
-  // Events zusammenfassen
-  ["paste", "drop"].forEach(evt =>
-    document.addEventListener(evt, handlePlainTextInsert)
-  );
-
-  // Hilfsfunktion: Plain‑Text an Cursor‑Position einfügen
-  function insertTextAtCursor(text) {
-    const sel = window.getSelection();
-    if (!sel.rangeCount) return;
-    const range = sel.getRangeAt(0);
-    range.deleteContents();
-    const node = document.createTextNode(text);
-    range.insertNode(node);
-    // Cursor direkt hinter den neuen Node setzen
-    range.setStartAfter(node);
-    range.collapse(true);
-    sel.removeAllRanges();
-    sel.addRange(range);
-  }
-});
-</script>
-
-  
-  
-  
-  
-    <script> // Für die Klasse oneline
 document.addEventListener('DOMContentLoaded', () => {
+    // Sanitizer für .oneline Felder: entfernt Zeilenumbrüche und <br>
     const sanitize = str => str.replace(/[\r\n]+/g, ' ').replace(/<br\s*\/?>/gi, ' ');
 
+    // Handler für Paste & Drop
+    function handleSanitizedInsert(e) {
+        // Nur für contenteditable Felder
+        const el = e.target;
+        if (!el.isContentEditable) return;
+
+        e.preventDefault();
+        let text = e.clipboardData?.getData("text/plain") ?? e.dataTransfer?.getData("text/plain") ?? "";
+
+        // Bei .oneline: Zeilenumbrüche entfernen
+        if (el.classList.contains('oneline')) {
+            text = sanitize(text);
+        }
+
+        insertTextAtCursor(text);
+    }
+
+    // Einfügen an Cursor-Position (Selection/Range API)
+    function insertTextAtCursor(text) {
+        const sel = window.getSelection();
+        if (!sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        const node = document.createTextNode(text);
+        range.insertNode(node);
+        // Cursor hinter den neuen Text setzen
+        range.setStartAfter(node);
+        range.collapse(true);
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    // Events für alle contenteditable Felder, aber nur wenn das Ziel ein contenteditable ist!
+    document.addEventListener('paste', handleSanitizedInsert, true);
+    document.addEventListener('drop', handleSanitizedInsert, true);
+
+    // Zusätzliche .oneline-Logik: Enter verhindern, input bereinigen, Formatierungen blocken
     document.querySelectorAll('.oneline[contenteditable]').forEach(el => {
-        // Enter verhindern
-        el.addEventListener('keydown', (e) => {
+        el.addEventListener('keydown', e => {
             if (e.key === 'Enter') e.preventDefault();
         });
 
-        // Nur reinen Text einfügen, keine Formatierungen, keine Zeilenumbrüche
-        el.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-            document.execCommand('insertText', false, sanitize(text));
-        });
-
-        // Drag & Drop unterbinden
-        el.addEventListener('drop', (e) => e.preventDefault());
-
-        // Eingaben "bereinigen" – gegen <br> oder \n durch externe Methoden
         el.addEventListener('input', () => {
+            // Cursorposition merken
+            const selection = window.getSelection();
+            if (!selection.rangeCount) return;
+            const range = selection.getRangeAt(0);
+            const preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(el);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            const caretOffset = preCaretRange.toString().length;
+
+            // Inhalt bereinigen
             el.innerText = sanitize(el.innerText);
+
+            // Cursorposition wiederherstellen
+            setCaretPosition(el, caretOffset);
         });
 
-        // Formatierungen durch Browseraktionen oder IME verhindern
-        el.addEventListener('beforeinput', (e) => {
+        el.addEventListener('beforeinput', e => {
             const blockedTypes = [
                 'insertParagraph', 'insertLineBreak', 'formatBold', 'formatItalic', 'formatUnderline'
             ];
             if (blockedTypes.includes(e.inputType)) e.preventDefault();
         });
     });
+
+    // Hilfsfunktion: Cursor an bestimmte Position setzen
+    function setCaretPosition(el, pos) {
+        let node = el.firstChild;
+        let chars = 0;
+        if (!node) return;
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(true);
+
+        while (node) {
+            if (node.nodeType === 3) {
+                const nextChars = chars + node.length;
+                if (nextChars >= pos) {
+                    range.setStart(node, pos - chars);
+                    range.collapse(true);
+                    break;
+                }
+                chars = nextChars;
+            }
+            node = node.nextSibling;
+        }
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
 });
+
+
  </script>
+  
+  
+   <script> //Anrede aus Anschriftenfeld
+document.addEventListener('DOMContentLoaded', () => {
+    // Hilfsfunktion: ersten Buchstaben jedes Wortes groß, Rest klein
+    function capitalizeWord(str) {
+        return str.replace(/\S+/g, w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    }
+
+    // Name zu Initiale + Nachname
+    function formatRucksendeName(name) {
+        if (!name) return '';
+        const trimmed = name.trim();
+        const spaceIdx = trimmed.indexOf(' ');
+        if (spaceIdx === -1) return capitalizeWord(trimmed);
+        const initial = trimmed.charAt(0).toUpperCase() + '.';
+        const nachname = capitalizeWord(trimmed.slice(spaceIdx + 1));
+        return `${initial} ${nachname}`;
+    }
+
+    // Adresse: HTML zu Fließtext, alles in eine Zeile, überflüssige Leerzeichen entfernen
+    function formatAdresse(adresseEl) {
+        if (!adresseEl) return '';
+        // innerText gibt den sichtbaren Text ohne HTML-Tags zurück, Zeilenumbrüche durch Leerzeichen ersetzen
+        return adresseEl.innerText.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+
+    // --- Anrede aus Anschriftzone ---
+    const anschriftzone = document.querySelector('anschriftzone');
+    const anrede = document.querySelector('anrede');
+    if (anschriftzone && anrede) {
+        function capitalize(str) {
+            if (!str) return '';
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        }
+        function updateAnredeFromAnschrift() {
+            const anschriftText = anschriftzone.innerText;
+            const match = anschriftText.match(/(?:^|\n)(herr|frau)\s+([a-zA-ZäöüßÄÖÜ\-]{2,})/i);
+            if (match) {
+                const geschlecht = capitalize(match[1]);
+                const nachname = match[2].split('-').map(capitalize).join('-');
+                if (geschlecht === "Herr") {
+                    anrede.innerText = `Sehr geehrter Herr ${nachname},`;
+                } else if (geschlecht === "Frau") {
+                    anrede.innerText = `Sehr geehrte Frau ${nachname},`;
+                }
+            }
+        }
+        anschriftzone.addEventListener('input', updateAnredeFromAnschrift);
+    }
+
+    // --- Absender + Adresse → Rücksendeangabe ---
+    const absender = document.querySelector('absender');
+    const adresse = document.querySelector('adresse');
+    const rucksendeangabe = document.querySelector('rucksendeangabe');
+    const maschunterschrift = document.querySelector('maschunterschrift');
+    function updateRucksendeangabeUndUnterschrift() {
+        // Name
+        const absenderText = absender ? absender.innerText.trim() : '';
+        const nameFormatted = formatRucksendeName(absenderText);
+
+        // Adresse
+        const adresseText = adresse ? formatAdresse(adresse) : '';
+
+        // Zusammenführen
+        let rucksendeText = nameFormatted;
+        if (adresseText) {
+            rucksendeText += ' | ' + adresseText;
+        }
+        if (rucksendeangabe) {
+            rucksendeangabe.innerText = rucksendeText;
+        }
+        if (maschunterschrift) {
+            // Maschunterschrift: nur Name, erster Buchstabe groß
+            maschunterschrift.innerText = absenderText.charAt(0).toUpperCase() + absenderText.slice(1);
+        }
+    }
+
+    // Events
+    if (absender) absender.addEventListener('input', updateRucksendeangabeUndUnterschrift);
+    if (adresse) adresse.addEventListener('input', updateRucksendeangabeUndUnterschrift);
+
+    // Initiales Setzen beim Laden
+    updateRucksendeangabeUndUnterschrift();
+});
+
+</script>
+  
+  
+  
+  
+  <script>
+ function addressAutocomplete(containerElement, callback) {
+    // Input-Feld erzeugen
+    const inputElement = document.createElement("input");
+    inputElement.type = "text";
+    inputElement.placeholder = "Adresse eingeben...";
+    inputElement.autocomplete = "off";
+    inputElement.style.width = "100%";
+    containerElement.appendChild(inputElement);
+
+    let currentTimeout;
+    let currentPromiseReject;
+    let currentItems;
+
+    const MIN_ADDRESS_LENGTH = 3;
+    const DEBOUNCE_DELAY = 300;
+    const apiKey = "76d0029534e44b51b8922907af2d20a9"; // <-- Hier deinen echten Key einsetzen!
+
+    inputElement.addEventListener("input", function() {
+        const currentValue = this.value;
+
+        if (currentTimeout) clearTimeout(currentTimeout);
+        if (currentPromiseReject) currentPromiseReject({ canceled: true });
+
+        if (!currentValue || currentValue.length < MIN_ADDRESS_LENGTH) return false;
+
+        currentTimeout = setTimeout(() => {
+            currentTimeout = null;
+            if (currentPromiseReject) currentPromiseReject({ canceled: true });
+
+            const url = `https://api.geoapify.com/v1/geocode/autocomplete?text=${encodeURIComponent(currentValue)}&format=json&lang=de&limit=5&apiKey=${apiKey}`;
+            let promise = new Promise((resolve, reject) => {
+                currentPromiseReject = reject;
+                fetch(url)
+                  .then(response => response.ok ? response.json().then(resolve) : response.json().then(reject));
+            });
+
+            promise.then((data) => {
+                currentItems = data.features;
+                closeDropDownList();
+                if (!currentItems || !currentItems.length) return false;
+
+                const autocompleteItemsElement = document.createElement("div");
+                autocompleteItemsElement.setAttribute("class", "autocomplete-items");
+                containerElement.appendChild(autocompleteItemsElement);
+
+                data.features.forEach((feature) => {
+                    const itemElement = document.createElement("DIV");
+                    itemElement.innerHTML = feature.properties.formatted;
+                    itemElement.addEventListener("click", function() {
+                        inputElement.value = feature.properties.formatted;
+                        closeDropDownList();
+                        if (callback) callback(feature);
+                    });
+                    autocompleteItemsElement.appendChild(itemElement);
+                });
+            }, (err) => {
+                if (!err.canceled) console.log(err);
+            });
+        }, DEBOUNCE_DELAY);
+    });
+
+    function closeDropDownList() {
+        const items = containerElement.querySelectorAll(".autocomplete-items");
+        items.forEach(item => containerElement.removeChild(item));
+    }
+
+    document.addEventListener("click", function(e) {
+        if (e.target !== inputElement) closeDropDownList();
+    });
+}
+
+// Initialisierung
+addressAutocomplete(
+    document.getElementById("adresse-autocomplete"),
+    function(selectedFeature) {
+        // Übertrage die ausgewählte Adresse ins contenteditable-Feld
+        document.getElementById('adresse').innerText = selectedFeature.properties.formatted;
+    }
+);
+
+  </script>
+  
+  
+  
   
   
 			</body>
